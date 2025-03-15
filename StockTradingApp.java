@@ -11,11 +11,11 @@ public class StockTradingApp {
         TransactionLogger transactionLogger = new TransactionLogger();
         
         // Initialize with some sample stocks
-        stockMarket.addStock(new Stock("AAPL", "Apple Inc.", 185.92));
-        stockMarket.addStock(new Stock("MSFT", "Microsoft Corporation", 425.27));
-        stockMarket.addStock(new Stock("GOOGL", "Alphabet Inc.", 175.33));
-        stockMarket.addStock(new Stock("AMZN", "Amazon.com Inc.", 187.63));
-        stockMarket.addStock(new Stock("TSLA", "Tesla, Inc.", 243.64));
+        stockMarket.addStock(new Stock("TTM", "TATAMOTORS", 425.27));
+        stockMarket.addStock(new Stock("YSB", "YESBANK", 185.92));
+        stockMarket.addStock(new Stock("JSW", "JSWSTEEL", 175.33));
+        stockMarket.addStock(new Stock("ASP", "ASIANPAINT", 187.63));
+        stockMarket.addStock(new Stock("GAB", "GABRIEL", 243.64));
         
         Console console = new Console(userManager, stockMarket, transactionLogger);
         console.start();
@@ -119,7 +119,7 @@ class Stock implements Serializable {
 
     @Override
     public String toString() {
-        return String.format("%-5s | %-25s | $%.2f", symbol, name, price);
+        return String.format("%-5s | %-25s | ₹%.2f", symbol, name, price);
     }
 }
 
@@ -178,7 +178,7 @@ class Transaction implements Serializable {
     @Override
     public String toString() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        return String.format("%-20s | %-5s | %-4s | %-3d | $%-8.2f | $%-10.2f", 
+        return String.format("%-20s | %-5s | %-4s | %-3d | ₹%-8.2f | ₹%-10.2f", 
             timestamp.format(formatter), stockSymbol, type, quantity, pricePerShare, totalAmount);
     }
 }
@@ -342,7 +342,7 @@ class Console {
     private void displayMainMenu() {
         System.out.println("\n===== MAIN MENU =====");
         System.out.println("Logged in as: " + currentUser.getUsername());
-        System.out.println("Account Balance: $" + String.format("%.2f", currentUser.getBankAccount().getBalance()));
+        System.out.println("Account Balance: ₹" + String.format("%.2f", currentUser.getBankAccount().getBalance()));
         System.out.println("1. View Available Stocks");
         System.out.println("2. View My Portfolio");
         System.out.println("3. Buy Stocks");
@@ -415,13 +415,13 @@ class Console {
                 double totalValue = quantity * stock.getPrice();
                 totalPortfolioValue += totalValue;
                 
-                System.out.printf("%-5s | %-25s | %-8d | $%-8.2f | $%.2f%n", 
+                System.out.printf("%-5s | %-25s | %-8d | ₹%-8.2f | ₹%.2f%n", 
                     symbol, stock.getName(), quantity, stock.getPrice(), totalValue);
             }
         }
         
         System.out.println("----------------------------------------------------------------------");
-        System.out.printf("TOTAL PORTFOLIO VALUE: $%.2f%n", totalPortfolioValue);
+        System.out.printf("TOTAL PORTFOLIO VALUE: ₹%.2f%n", totalPortfolioValue);
         
         pressEnterToContinue();
     }
@@ -465,7 +465,7 @@ class Console {
                 currentUser.getUsername(), symbol, quantity, stock.getPrice(), Transaction.TransactionType.BUY);
             transactionLogger.logTransaction(transaction);
             
-            System.out.printf("Successfully purchased %d shares of %s for $%.2f%n", 
+            System.out.printf("Successfully purchased %d shares of %s for ₹%.2f%n", 
                 quantity, stock.getName(), totalCost);
         } else {
             System.out.println("Insufficient funds. Transaction cancelled.");
@@ -501,7 +501,7 @@ class Console {
         int ownedQuantity = portfolio.get(symbol);
         Stock stock = stockMarket.getStock(symbol);
         
-        System.out.printf("You own %d shares of %s. Current price: $%.2f%n", 
+        System.out.printf("You own %d shares of %s. Current price: ₹%.2f%n", 
             ownedQuantity, stock.getName(), stock.getPrice());
         System.out.print("Enter quantity to sell: ");
         int quantity = getIntInput();
@@ -529,7 +529,7 @@ class Console {
             currentUser.getUsername(), symbol, quantity, stock.getPrice(), Transaction.TransactionType.SELL);
         transactionLogger.logTransaction(transaction);
         
-        System.out.printf("Successfully sold %d shares of %s for $%.2f%n", 
+        System.out.printf("Successfully sold %d shares of %s for ₹%.2f%n", 
             quantity, stock.getName(), totalValue);
         
         pressEnterToContinue();
